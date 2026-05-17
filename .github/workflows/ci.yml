@@ -62,7 +62,7 @@ jobs:
         run: |
           pip install coverage
           coverage run manage.py test shop
-          coverage report --min-coverage=60
+          coverage report --fail-under=60
           coverage xml
 
       - name: 📈 Upload coverage report
