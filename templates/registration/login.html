@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Вхід — ShopUA{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm rounded-3 p-4">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-circle text-primary" style="font-size:3rem;"></i>
+                    <h3 class="fw-bold mt-2">Вхід в акаунт</h3>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                    <div class="alert alert-danger">Невірний логін або пароль</div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Ім'я користувача</label>
+                        <input type="text" name="username" class="form-control" autofocus required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Пароль</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <input type="hidden" name="next" value="{{ next }}">
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Увійти
+                    </button>
+                </form>
+                <div class="text-center mt-3">
+                    <span class="text-muted">Немає акаунту? </span>
+                    <a href="{% url 'shop:register' %}" class="fw-semibold">Зареєструватись</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

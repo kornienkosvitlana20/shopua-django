@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopUA — Онлайн Магазин{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent: #f59e0b;
+        }
+        body { background: #f8fafc; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%) !important; box-shadow: 0 2px 10px rgba(0,0,0,.2); }
+        .navbar-brand { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; }
+        .navbar-brand span { color: #f59e0b; }
+        .cart-badge { background: #ef4444; color: #fff; border-radius: 50%; padding: 2px 7px; font-size: .75rem; font-weight: 700; }
+        .product-card { border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.08); transition: transform .2s, box-shadow .2s; overflow: hidden; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.15); }
+        .product-card img { height: 220px; object-fit: cover; }
+        .price-badge { background: var(--primary); color: #fff; border-radius: 8px; padding: 4px 12px; font-weight: 700; }
+        .btn-primary { background: var(--primary); border-color: var(--primary); border-radius: 8px; font-weight: 600; }
+        .btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+        .btn-accent { background: var(--accent); border: none; color: #1a1a1a; border-radius: 8px; font-weight: 600; }
+        .category-pill { border-radius: 20px; padding: 6px 16px; margin: 4px; font-size: .9rem; }
+        .hero { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 60%, #60a5fa 100%); color: #fff; padding: 80px 0; }
+        .footer { background: #1e3a5f; color: #cbd5e1; padding: 40px 0 20px; margin-top: 60px; }
+        .footer a { color: #94a3b8; text-decoration: none; }
+        .footer a:hover { color: #fff; }
+        .order-status-badge { font-size: .8rem; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+        .alert { border-radius: 10px; }
+        .form-control { border-radius: 8px; }
+        .cart-item-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+        .section-title { font-weight: 800; color: #1e3a5f; position: relative; padding-bottom: 10px; }
+        .section-title::after { content: ''; display: block; width: 50px; height: 4px; background: var(--primary); border-radius: 2px; margin-top: 8px; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'shop:product_list' %}">Shop<span>UA</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'shop:product_list' %}">
+                        <i class="bi bi-shop"></i> Каталог
+                    </a>
+                </li>
+            </ul>
+            <form class="d-flex me-3" action="{% url 'shop:product_list' %}" method="get">
+                <div class="input-group">
+                    <input class="form-control" type="search" name="q" placeholder="Пошук товарів..." value="{{ request.GET.q }}">
+                    <button class="btn btn-light" type="submit"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+            <ul class="navbar-nav align-items-center gap-1">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'shop:cart_detail' %}">
+                        <i class="bi bi-cart3"></i>
+                        {% if cart_item_count > 0 %}
+                        <span class="cart-badge">{{ cart_item_count }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> {{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'shop:order_list' %}"><i class="bi bi-bag me-2"></i>Мої замовлення</a></li>
+                        {% if user.is_staff %}
+                        <li><a class="dropdown-item" href="/admin/"><i class="bi bi-gear me-2"></i>Адмінпанель</a></li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Вийти</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Увійти</a>
+                </li>
+                <li class="nav-item ms-1">
+                    <a class="btn btn-warning btn-sm fw-bold" href="{% url 'shop:register' %}">Реєстрація</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+
+{% block content %}{% endblock %}
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <h5 class="text-white fw-bold">ShopUA</h5>
+                <p>Найкращий вибір товарів за найкращими цінами. Доставка по всій Україні.</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h6 class="text-white">Навігація</h6>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'shop:product_list' %}">Каталог товарів</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'shop:order_list' %}">Мої замовлення</a></li>
+                    <li><a href="{% url 'shop:cart_detail' %}">Кошик</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h6 class="text-white">Контакти</h6>
+                <p><i class="bi bi-telephone me-2"></i>+380 50 000 00 00</p>
+                <p><i class="bi bi-envelope me-2"></i>info@shopua.com</p>
+                <p><i class="bi bi-geo-alt me-2"></i>Київ, Україна</p>
+            </div>
+        </div>
+        <hr style="border-color: #334155;">
+        <p class="text-center mb-0">© 2024 ShopUA. Всі права захищені.</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

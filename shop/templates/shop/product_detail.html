@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — ShopUA{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}">Каталог</a></li>
+            <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+                {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height:400px;">
+                    <i class="bi bi-image text-muted" style="font-size:5rem;"></i>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-7">
+            <small class="text-muted">{{ product.category.name }}</small>
+            <h1 class="fw-bold mt-1 mb-3">{{ product.name }}</h1>
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="display-6 fw-bold text-primary">{{ product.price }} грн</span>
+                {% if product.stock > 0 %}
+                <span class="badge bg-success fs-6 px-3 py-2">
+                    <i class="bi bi-check-circle me-1"></i>В наявності ({{ product.stock }} шт.)
+                </span>
+                {% else %}
+                <span class="badge bg-danger fs-6 px-3 py-2">Немає в наявності</span>
+                {% endif %}
+            </div>
+
+            <p class="text-muted mb-4" style="line-height:1.8;">{{ product.description }}</p>
+
+            {% if product.stock > 0 %}
+            <form method="post" action="{% url 'shop:cart_add' product.id %}">
+                {% csrf_token %}
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <label class="fw-semibold">Кількість:</label>
+                    <div class="input-group" style="width:130px;">
+                        <button class="btn btn-outline-secondary" type="button" onclick="changeQty(-1)">-</button>
+                        <input type="number" name="quantity" id="qty" value="1" min="1" max="{{ product.stock }}" class="form-control text-center">
+                        <button class="btn btn-outline-secondary" type="button" onclick="changeQty(1)">+</button>
+                    </div>
+                </div>
+                {% if user.is_authenticated %}
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-cart-plus me-2"></i>Додати до кошика
+                </button>
+                {% else %}
+                <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-person me-2"></i>Увійдіть для купівлі
+                </a>
+                {% endif %}
+            </form>
+            {% endif %}
+
+            <div class="mt-4 p-3 bg-light rounded-3">
+                <div class="row text-center g-3">
+                    <div class="col-4">
+                        <i class="bi bi-truck text-primary fs-4"></i>
+                        <div class="small mt-1">Швидка доставка</div>
+                    </div>
+                    <div class="col-4">
+                        <i class="bi bi-shield-check text-primary fs-4"></i>
+                        <div class="small mt-1">Гарантія якості</div>
+                    </div>
+                    <div class="col-4">
+                        <i class="bi bi-arrow-return-left text-primary fs-4"></i>
+                        <div class="small mt-1">Повернення 14 днів</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if related_products %}
+    <div class="mt-5">
+        <h4 class="section-title mb-4">Схожі товари</h4>
+        <div class="row g-4">
+            {% for p in related_products %}
+            <div class="col-md-3 col-sm-6">
+                <div class="card product-card h-100">
+                    <a href="{{ p.get_absolute_url }}">
+                        {% if p.image %}
+                        <img src="{{ p.image.url }}" class="card-img-top" alt="{{ p.name }}" style="height:180px;object-fit:cover;">
+                        {% else %}
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="height:180px;">
+                            <i class="bi bi-image text-muted fs-2"></i>
+                        </div>
+                        {% endif %}
+                    </a>
+                    <div class="card-body">
+                        <h6 class="card-title"><a href="{{ p.get_absolute_url }}" class="text-decoration-none text-dark">{{ p.name }}</a></h6>
+                        <span class="price-badge">{{ p.price }} грн</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function changeQty(delta) {
+    const input = document.getElementById('qty');
+    const max = parseInt(input.max);
+    let val = parseInt(input.value) + delta;
+    if (val < 1) val = 1;
+    if (val > max) val = max;
+    input.value = val;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Реєстрація — ShopUA{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm rounded-3 p-4">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-plus text-primary" style="font-size:3rem;"></i>
+                    <h3 class="fw-bold mt-2">Реєстрація</h3>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ field.label }}</label>
+                        <input type="{{ field.field.widget.input_type }}"
+                               name="{{ field.html_name }}"
+                               class="form-control {% if field.errors %}is-invalid{% endif %}"
+                               {% if field.value %}value="{{ field.value }}"{% endif %}>
+                        {% if field.errors %}
+                        <div class="invalid-feedback">{{ field.errors|join:", " }}</div>
+                        {% endif %}
+                        {% if field.help_text %}
+                        <small class="text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">
+                        <i class="bi bi-person-check me-2"></i>Зареєструватись
+                    </button>
+                </form>
+                <div class="text-center mt-3">
+                    <span class="text-muted">Вже є акаунт? </span>
+                    <a href="{% url 'login' %}" class="fw-semibold">Увійти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
