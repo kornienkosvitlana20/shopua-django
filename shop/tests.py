@@ -1,4 +1,5 @@
-"""
+# Тести розроблені: Вялкова Поліна 
+""" 
 Tests for ShopUA Online Store
 Tests written by: Team (2 members)
 """
@@ -9,9 +10,6 @@ from django.contrib.auth.models import User
 from shop.models import Category, Product, Cart, CartItem, Order, OrderItem
 
 
-# ============================
-# MODEL TESTS (Member 1)
-# ============================
 
 class CategoryModelTest(TestCase):
     def setUp(self):
