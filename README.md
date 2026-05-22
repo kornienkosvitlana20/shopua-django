@@ -180,4 +180,5 @@ shopua/
 | GitHub Actions | 2 |
 | Django Admin Panel | +1 (бонус) |
 | **Всього** | **13** |
-Docker працює локально на Windows 11
+
+Перевірено: Docker працює локально на Windows 11
