@@ -1,3 +1,4 @@
+# URL маршрути розроблені: Вялкова Поліна 
 from django.urls import path
 from . import views
 
