@@ -1,28 +1,47 @@
-Повнофункціональний онлайн-магазин, розроблений у рамках лабораторної роботи з дисципліни «Неперервна інтеграція та розгортання ПЗ». Рівень: Складний.
+# ShopUA — Онлайн-магазин на Django
 
 
-Команда
-УчасникВідповідальністьКорнієнко Світлана (Учасник 1)Django models, Admin panel, Docker, GitHub Actions (lint + docker jobs)Вялкова Поліна (Учасник 2)Django views, Templates, Tests, GitHub Actions (test + summary jobs)
+> Повнофункціональний онлайн-магазин, розроблений у рамках лабораторної роботи з дисципліни «Неперервна інтеграція та розгортання ПЗ». Рівень: Складний.
 
-Можливості проекту
+---
 
-Каталог товарів з категоріями та пошуком
-Кошик покупок
-Система замовлень зі статусами
-Реєстрація та авторизація користувачів
-Django Admin Panel для управління
+## Команда
 
+| Учасник | Відповідальність |
+|---------|-----------------|
+| **Корнієнко Світлана** (Учасник 1) | Django models, Admin panel, Docker, GitHub Actions (lint + docker jobs) |
+| **Вялкова Поліна** (Учасник 2) | Django views, Templates, Tests, GitHub Actions (test + summary jobs) |
 
-Швидкий старт
-За допомогою Docker (рекомендовано)
-bashgit clone https://github.com/kornienkosvitlana20/shopua-django.git
+---
+
+## Можливості проекту
+
+- Каталог товарів з категоріями та пошуком
+- Кошик покупок
+- Система замовлень зі статусами
+- Реєстрація та авторизація користувачів
+- Django Admin Panel для управління
+
+---
+
+## Швидкий старт
+
+### За допомогою Docker (рекомендовано)
+
+```bash
+git clone https://github.com/kornienkosvitlana20/shopua-django.git
 cd shopua-django
 docker compose up -d
-Застосунок: http://localhost:8000
-Адмінпанель: http://localhost:8000/admin
-Логін: admin | Пароль: admin123
-Локально (без Docker)
-bash# Створити та активувати віртуальне середовище
+```
+
+Застосунок: http://localhost:8000  
+Адмінпанель: http://localhost:8000/admin  
+Логін: `admin` | Пароль: `admin123`
+
+### Локально (без Docker)
+
+```bash
+# Створити та активувати віртуальне середовище
 python -m venv venv
 venv\Scripts\activate        # Windows
 # source venv/bin/activate   # Linux/Mac
@@ -36,29 +55,67 @@ python manage.py populate_data
 
 # Запустити сервер
 python manage.py runserver
+```
 
-Тестування
-bash# Запуск всіх тестів
+---
+
+## Тестування
+
+```bash
+# Запуск всіх тестів
 python manage.py test shop --verbosity=2
 
 # Запуск з покриттям коду
 pip install coverage
 coverage run manage.py test shop
 coverage report
-Структура тестів
-ТестВідповідальнийЩо перевіряєCategoryModelTestУчасник 1Модель категорійProductModelTestУчасник 1Модель товарівOrderModelTestУчасник 1Модель замовленьCartModelTestУчасник 1Модель кошикаProductListViewTestУчасник 2Список товарівProductDetailViewTestУчасник 2Деталі товаруCartViewTestУчасник 2Операції з кошикомAuthViewTestУчасник 2АвторизаціяOrderViewTestУчасник 2Замовлення
+```
 
-Docker
-bashdocker build -t shopua .       # Зібрати образ
+### Структура тестів
+
+| Тест | Відповідальний | Що перевіряє |
+|------|---------------|--------------|
+| `CategoryModelTest` | Учасник 1 | Модель категорій |
+| `ProductModelTest` | Учасник 1 | Модель товарів |
+| `OrderModelTest` | Учасник 1 | Модель замовлень |
+| `CartModelTest` | Учасник 1 | Модель кошика |
+| `ProductListViewTest` | Учасник 2 | Список товарів |
+| `ProductDetailViewTest` | Учасник 2 | Деталі товару |
+| `CartViewTest` | Учасник 2 | Операції з кошиком |
+| `AuthViewTest` | Учасник 2 | Авторизація |
+| `OrderViewTest` | Учасник 2 | Замовлення |
+
+---
+
+## Docker
+
+```bash
+docker build -t shopua .       # Зібрати образ
 docker compose up -d           # Запустити
 docker compose logs -f         # Переглянути логи
 docker compose down            # Зупинити
+```
 
-CI/CD Pipeline (GitHub Actions)
+---
+
+## CI/CD Pipeline (GitHub Actions)
+
+```
 push / PR  →  lint  →  test  →  docker-build  →  deploy-summary
-JobВідповідальнийДіїlintУчасник 1Перевірка конфігурації DjangotestУчасник 2Запуск тестів + coveragedocker-buildУчасник 1Збірка образу + запуск тестів у контейнеріdeploy-summaryУчасник 2Звіт про результати pipeline
+```
 
-Структура проекту
+| Job | Відповідальний | Дії |
+|-----|---------------|-----|
+| **lint** | Учасник 1 | Перевірка конфігурації Django |
+| **test** | Учасник 2 | Запуск тестів + coverage |
+| **docker-build** | Учасник 1 | Збірка образу + запуск тестів у контейнері |
+| **deploy-summary** | Учасник 2 | Звіт про результати pipeline |
+
+---
+
+## Структура проекту
+
+```
 shopua-django/
 ├── .github/
 │   └── workflows/
@@ -85,9 +142,31 @@ shopua-django/
 ├── docker-compose.yml
 ├── requirements.txt
 └── README.md
+```
 
-Технології
-КатегоріяТехнологіяBackendPython 3.11, Django 4.2FrontendBootstrap 5, Bootstrap IconsContainerizationDocker, Docker ComposeCI/CDGitHub ActionsServerGunicorn
+---
 
-Оцінювання
-КритерійБалиDjango веб-застосунок (складний)8Docker та docker-compose2GitHub Actions2Django Admin Panel+1 (бонус)Всього13
+## Технології
+
+| Категорія | Технологія |
+|-----------|-----------|
+| Backend | Python 3.11, Django 4.2 |
+| Frontend | Bootstrap 5, Bootstrap Icons |
+| Containerization | Docker, Docker Compose |
+| CI/CD | GitHub Actions |
+| Server | Gunicorn |
+
+---
+
+## Оцінювання
+
+| Критерій | Бали |
+|----------|------|
+| Django веб-застосунок (складний) | 8 |
+| Docker та docker-compose | 2 |
+| GitHub Actions | 2 |
+| Django Admin Panel | +1 (бонус) |
+| **Всього** | **13** |
+
+---
+
