@@ -1,3 +1,4 @@
+# Конфігурація додатку: Вялкова Поліна 
 from django.apps import AppConfig
 
 
